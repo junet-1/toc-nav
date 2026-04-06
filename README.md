@@ -2,7 +2,13 @@
 
 A scroll-synchronized navigation component with an animated SVG path and a dot that rides the track as you scroll.
 
+Built for technical blogs and documentation where traditional TOCs feel static and disconnected from reading flow.
+
+![npm](https://img.shields.io/npm/v/@atlas-kit/toc-nav)![license](https://img.shields.io/npm/l/@atlas-kit/toc-nav)![bundle size](https://img.shields.io/bundlephobia/minzip/@atlas-kit/toc-nav)
+
 ![toc-nav preview](./preview/preview.gif)
+
+**Live preview:** [endpointatlas.com/blog/intune-maa-in-grossen-orgs](https://endpointatlas.com/blog/intune-maa-in-grossen-orgs)
 
 ---
 
@@ -23,9 +29,18 @@ A scroll-synchronized navigation component with an animated SVG path and a dot t
 ```bash
 npm install toc-nav
 ```
-
 ```bash
-# optional: import default CSS variable definitions
+pnpm add toc-nav
+```
+```bash
+yarn add toc-nav
+```
+```bash
+bun add toc-nav
+```
+
+```ts
+// optional: import default CSS variable definitions
 import 'toc-nav/styles.css'
 ```
 
