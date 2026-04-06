@@ -162,20 +162,3 @@ export function extractHeadings(mdxSource: string): TocItem[] {
   }))
 }
 ```
-
----
-
-## File structure
-
-```
-toc-nav/
-├── core/
-│   ├── buildPath.ts          # Pure SVG path builder
-│   ├── docToSvgY.ts          # Piecewise linear doc→SVG mapping
-│   └── useTocNavigation.ts   # Headless scroll-tracking hook
-├── components/
-│   └── TocNav.tsx            # shadcn-style UI wrapper
-├── types.ts                  # TocItem interface
-└── index.ts                  # Barrel export
-```
-# toc-nav

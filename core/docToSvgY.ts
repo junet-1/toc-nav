@@ -1,17 +1,3 @@
-/**
- * Map a document Y coordinate to an SVG-path Y coordinate using piecewise
- * linear interpolation between the known heading anchor points.
- *
- * This correctly handles non-uniform heading distribution in the document —
- * a heading that takes up 30 % of the article maps to 30 % of the SVG track,
- * not a fixed pixel offset.
- *
- * Pure function — no side effects, no DOM access.
- *
- * @param docY        - Absolute document Y (e.g. `window.scrollY`)
- * @param articleTops - Absolute document Y of each heading anchor (same order as items)
- * @param tocYs       - Corresponding SVG Y of each TOC list item midpoint
- */
 export function docToSvgY(
   docY: number,
   articleTops: number[],

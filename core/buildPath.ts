@@ -3,10 +3,6 @@ export const LINE_X: Record<2 | 3, number> = { 2: 6, 3: 14 }
 
 const CORNER_R = 5
 
-/**
- * Build the indented SVG path with rounded corners at level-change bends.
- * Pure function — no side effects, no DOM access.
- */
 export function buildPath(pts: { x: number; y: number }[]): string {
   if (pts.length < 2) return ''
   let d = `M ${pts[0].x} ${pts[0].y}`

@@ -2,7 +2,7 @@
 export { TocNav } from './components/TocNav'
 export type { TocNavProps } from './components/TocNav'
 
-// Headless hook — bring your own UI
+// Headless hook bring your own UI
 export { useTocNavigation } from './core/useTocNavigation'
 export type { UseTocNavigationOptions, TocNavigationState } from './core/useTocNavigation'
 
