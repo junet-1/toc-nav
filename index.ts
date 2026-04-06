@@ -1,6 +1,6 @@
 // UI component
 export { TocNav } from './components/TocNav'
-export type { TocNavProps } from './components/TocNav'
+export type { TocNavProps, TocPosition } from './components/TocNav'
 
 // Headless hook bring your own UI
 export { useTocNavigation } from './core/useTocNavigation'

@@ -1,16 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import type { TocItem } from '../types'
 import { useTocNavigation } from '../core/useTocNavigation'
 
-// Zero-dependency cn — no @/lib/utils required
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-// Inline chevron so lucide-react is not required
 function DefaultChevron() {
   return (
     <svg
@@ -30,6 +28,14 @@ function DefaultChevron() {
   )
 }
 
+export type TocPosition = 'right' | 'left' | 'inline'
+
+const positionStyles: Record<TocPosition, string> = {
+  right: 'hidden xl:flex flex-col fixed top-24',
+  left: 'hidden xl:flex flex-col fixed top-24 left-4',
+  inline: 'flex flex-col w-full mb-8',
+}
+
 export interface TocNavProps {
   items: TocItem[]
   /**
@@ -46,9 +52,33 @@ export interface TocNavProps {
   headerOffset?: number
   /** Override label text. @default "On this page" */
   label?: string
+  /**
+   * Controls where the TOC is rendered.
+   * - `right` (default): fixed to the right of the content column
+   * - `left`: fixed to the left side of the viewport
+   * - `inline`: flows with the document, visible at all breakpoints
+   * @default "right"
+   */
+  position?: TocPosition
+  /**
+   * Max-width of the main content column (e.g. `"65ch"`, `"860px"`).
+   * Used when `position="right"` to compute the correct right offset.
+   * Falls back to `1rem` from the viewport edge when omitted.
+   */
+  containerWidth?: string
+  /** Additional classes merged onto the `<nav>` element. Use to override width, top offset, etc. */
+  className?: string
 }
 
-export function TocNav({ items, icon, headerOffset = 88, label = 'On this page' }: TocNavProps) {
+export function TocNav({
+  items,
+  icon,
+  headerOffset = 88,
+  label = 'On this page',
+  position = 'right',
+  containerWidth,
+  className,
+}: TocNavProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const {
@@ -68,66 +98,80 @@ export function TocNav({ items, icon, headerOffset = 88, label = 'On this page' 
 
   const chevron = icon ?? <DefaultChevron />
 
+  const navStyle: CSSProperties | undefined =
+    position === 'right'
+      ? {
+          right: containerWidth
+            ? `max(1rem, calc((100vw - ${containerWidth}) / 2 - 13rem - 1.5rem))`
+            : '1rem',
+        }
+      : undefined
+
   return (
     <>
-      {/* ── Mobile inline collapsible (hidden on xl+) ── */}
-      <div className="xl:hidden mb-8 rounded-lg border border-border/40 bg-muted/30 overflow-hidden">
-        <button
-          onClick={() => setMobileOpen((o) => !o)}
-          className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
-          aria-expanded={mobileOpen}
-          aria-controls="toc-mobile-list"
-        >
-          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {label}
-          </span>
-          <span
-            className={cn(
-              'text-muted-foreground transition-transform duration-200',
-              mobileOpen && 'rotate-180',
-            )}
+      {/* ── Mobile inline collapsible — hidden on xl+ and not needed for inline position ── */}
+      {position !== 'inline' && (
+        <div className="xl:hidden mb-8 rounded-lg border border-border/40 bg-muted/30 overflow-hidden">
+          <button
+            onClick={() => setMobileOpen((o) => !o)}
+            className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+            aria-expanded={mobileOpen}
+            aria-controls="toc-mobile-list"
           >
-            {chevron}
-          </span>
-        </button>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              {label}
+            </span>
+            <span
+              className={cn(
+                'text-muted-foreground transition-transform duration-200',
+                mobileOpen && 'rotate-180',
+              )}
+            >
+              {chevron}
+            </span>
+          </button>
 
-        {mobileOpen && (
-          <ul id="toc-mobile-list" className="flex flex-col pb-2 border-t border-border/40">
-            {items.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setMobileOpen(false)
-                    scrollTo(item.id)
-                  }}
-                  className={cn(
-                    'block px-4 py-2 text-sm leading-snug transition-colors hover:text-foreground',
-                    item.level === 3
-                      ? 'pl-8 text-muted-foreground/70'
-                      : 'text-muted-foreground',
-                  )}
-                >
-                  {item.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+          {mobileOpen && (
+            <ul id="toc-mobile-list" className="flex flex-col pb-2 border-t border-border/40">
+              {items.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setMobileOpen(false)
+                      scrollTo(item.id)
+                    }}
+                    className={cn(
+                      'block px-4 py-2 text-sm leading-snug transition-colors hover:text-foreground',
+                      item.level === 3
+                        ? 'pl-8 text-muted-foreground/70'
+                        : 'text-muted-foreground',
+                    )}
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
-      {/* ── Desktop fixed sidebar (xl+) ── */}
+      {/* ── TOC nav: fixed sidebar (left/right) or inline block ── */}
       <nav
         aria-label={label}
         className={cn(
-          'hidden xl:flex flex-col fixed top-24 w-52',
+          positionStyles[position],
           'max-h-[calc(100vh-7rem)] overflow-y-auto',
           '[&::-webkit-scrollbar]:w-0',
           'transition-opacity duration-300',
-          ready ? 'opacity-100' : 'opacity-0',
+          'z-50',
+          position !== 'inline' ? (ready ? 'opacity-100' : 'opacity-0') : 'opacity-100',
+          position !== 'inline' && 'w-52',
+          className,
         )}
-        style={{ right: 'max(1rem, calc((100vw - 50rem) / 2 - 13rem - 1.5rem))' }}
+        style={navStyle}
       >
         <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/50 pl-6">
           {label}
@@ -155,7 +199,7 @@ export function TocNav({ items, icon, headerOffset = 88, label = 'On this page' 
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ stroke: 'var(--color-border)' }}
+                style={{ stroke: 'var(--color-border, #e2e8f0)' }}
               />
 
               {/* Bright foreground track clipped to viewport slice */}
@@ -167,13 +211,13 @@ export function TocNav({ items, icon, headerOffset = 88, label = 'On this page' 
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 clipPath="url(#toc-viewport-clip)"
-                style={{ stroke: 'var(--color-primary)' }}
+                style={{ stroke: 'var(--color-primary, #3b82f6)' }}
               />
 
               {/* Dot: halo punches through the line, primary dot sits on top */}
               <g ref={dotGroupRef} transform="translate(-100,-100)">
-                <circle r={5.5} style={{ fill: 'var(--color-background)' }} />
-                <circle r={3} style={{ fill: 'var(--color-primary)' }} />
+                <circle r={5.5} style={{ fill: 'var(--color-background, #ffffff)' }} />
+                <circle r={3} style={{ fill: 'var(--color-primary, #3b82f6)' }} />
               </g>
             </svg>
           )}

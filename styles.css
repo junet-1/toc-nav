@@ -1,0 +1,54 @@
+/**
+ * @atlas-kit/toc-nav — base styles
+ *
+ * Import this file if your project does not already define the CSS variables
+ * consumed by the TOC component, or to opt into smooth scroll behaviour.
+ *
+ *   import '@atlas-kit/toc-nav/styles.css'
+ */
+
+/* ── CSS variable defaults ─────────────────────────────────────────────── */
+:root {
+  --color-primary: #3b82f6;
+  --color-background: #ffffff;
+  --color-border: #e2e8f0;
+  --color-muted: #64748b;
+}
+
+/* ── Smooth anchor scrolling ────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Layout defaults ────────────────────────────────────────────────────── */
+
+/*
+ * Base font and spacing for the TOC list items when Tailwind is not present.
+ * These values mirror what the Tailwind utility classes produce, so they are
+ * safe to include alongside Tailwind without conflict.
+ */
+[data-toc-nav] {
+  font-size: 0.8125rem; /* ~13px */
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+[data-toc-nav] a {
+  display: block;
+  text-decoration: none;
+  color: var(--color-muted, #64748b);
+  transition: color 150ms ease;
+}
+
+[data-toc-nav] a:hover {
+  color: inherit;
+}
+
+/* ── Scrollbar suppression ──────────────────────────────────────────────── */
+[data-toc-nav]::-webkit-scrollbar {
+  width: 0;
+}
+
+[data-toc-nav] {
+  scrollbar-width: none;
+}

@@ -25,15 +25,15 @@ export interface TocNavigationState {
   /** False until the first scroll computation runs — lets consumers fade in. */
   ready: boolean
   /** Attach to the `<ul>` that renders the TOC items. */
-  listRef: RefObject<HTMLUListElement | null>
+  listRef: RefObject<HTMLUListElement>
   /** Attach each `<li>` by its heading ID: `ref={(el) => { ... itemRefs.current.set(id, el) }}` */
   itemRefs: MutableRefObject<Map<string, HTMLLIElement>>
   /** Attach to the `<rect>` inside the SVG clipPath. Updated every rAF frame. */
-  clipRectRef: RefObject<SVGRectElement | null>
+  clipRectRef: RefObject<SVGRectElement>
   /** Attach to the foreground `<path>`. Used for dot binary-search. */
-  fgPathRef: RefObject<SVGPathElement | null>
+  fgPathRef: RefObject<SVGPathElement>
   /** Attach to the dot `<g>`. Transform is updated every rAF frame. */
-  dotGroupRef: RefObject<SVGGElement | null>
+  dotGroupRef: RefObject<SVGGElement>
   /** Smooth-scroll the page to a heading anchor. */
   scrollTo: (id: string) => void
 }
