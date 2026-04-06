@@ -1,5 +1,7 @@
 # `toc-nav` — atlas-kit
 
+![toc-nav preview](./preview/preview.gif)
+
 A scroll-tracked Table of Contents for Next.js / React with:
 
 - **Animated SVG track line** — dim background + bright foreground clipped to the current viewport slice
