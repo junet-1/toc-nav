@@ -1,6 +1,6 @@
 {
   "name": "@atlas-kit/toc-nav",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scroll-tracked animated Table of Contents for Next.js / React",
   "type": "module",
   "main": "./dist/index.cjs",
